@@ -48,7 +48,7 @@ export default function InterviewRoom() {
         const data = docSnap.data();
         setSession(data);
         setDocId(docSnap.id);
-        
+
         if (data.status === "terminated") setIsTerminated(true);
         if (data.status === "completed") setIsComplete(true);
       }
@@ -64,9 +64,9 @@ export default function InterviewRoom() {
   // --- Camera & Monitoring Setup ---
   useEffect(() => {
     if (!docId || isTerminated || isComplete) return;
-    
+
     let activeStream = null;
-    
+
     // Start camera
     async function enableCamera() {
       try {
@@ -87,13 +87,13 @@ export default function InterviewRoom() {
     const handleVisibilityChange = async () => {
       if (document.hidden && !isComplete && !isTerminated) {
         setWarnings(w => {
-           const newWarnings = w + 1;
-           if (newWarnings >= 3) triggerTermination();
-           else {
-             setShowWarningToast(true);
-             setTimeout(() => setShowWarningToast(false), 4000);
-           }
-           return newWarnings;
+          const newWarnings = w + 1;
+          if (newWarnings >= 3) triggerTermination();
+          else {
+            setShowWarningToast(true);
+            setTimeout(() => setShowWarningToast(false), 4000);
+          }
+          return newWarnings;
         });
       }
     };
@@ -101,13 +101,13 @@ export default function InterviewRoom() {
     const handleBlur = async () => {
       if (!isComplete && !isTerminated) {
         setWarnings(w => {
-           const newWarnings = w + 1;
-           if (newWarnings >= 3) triggerTermination();
-           else {
-             setShowWarningToast(true);
-             setTimeout(() => setShowWarningToast(false), 4000);
-           }
-           return newWarnings;
+          const newWarnings = w + 1;
+          if (newWarnings >= 3) triggerTermination();
+          else {
+            setShowWarningToast(true);
+            setTimeout(() => setShowWarningToast(false), 4000);
+          }
+          return newWarnings;
         });
       }
     };
@@ -120,11 +120,11 @@ export default function InterviewRoom() {
         activeStream.getTracks().forEach(track => track.stop());
       }
       try {
-        await updateDoc(doc(db, "sessions", docId), { 
-           status: "terminated",
-           terminatedAt: new Date().toISOString(),
-           warningsCount: 3,
-           terminationReason: "Cheating Detected (Tab Switches)"
+        await updateDoc(doc(db, "sessions", docId), {
+          status: "terminated",
+          terminatedAt: new Date().toISOString(),
+          warningsCount: 3,
+          terminationReason: "Cheating Detected (Tab Switches)"
         });
       } catch (err) { console.error("Failed saving termination state", err); }
     }
@@ -200,7 +200,7 @@ export default function InterviewRoom() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
-      await updateDoc(doc(db, "sessions", docId), { 
+      await updateDoc(doc(db, "sessions", docId), {
         report: data.report,
         warningsCount: warnings // Save warnings to session
       });
@@ -223,9 +223,9 @@ export default function InterviewRoom() {
       setQuestionCount((c) => c + 1);
       if (data.isComplete) {
         setIsComplete(true);
-        await updateDoc(doc(db, "sessions", docId), { 
-          transcript: updatedMessages, 
-          status: "completed", 
+        await updateDoc(doc(db, "sessions", docId), {
+          transcript: updatedMessages,
+          status: "completed",
           completedAt: new Date().toISOString(),
           warningsCount: warnings // Save warnings to session
         });
@@ -306,11 +306,11 @@ export default function InterviewRoom() {
             Suspicious Activity Detected
           </p>
           <div className="bg-red-50 dark:bg-red-900/10 rounded-xl p-6 text-left mb-8 border border-red-100 dark:border-red-900/30">
-             <p className="text-red-800 dark:text-red-400 text-sm leading-relaxed">
-               This interview has been automatically closed because our proctoring system recorded <strong>3 severe violations</strong> of our anti-cheating policy (navigating away from the interview tab or minimizing the window). 
-               <br/><br/>
-               The session recording and transcript have been permanently locked and flagged for review by the recruiting team.
-             </p>
+            <p className="text-red-800 dark:text-red-400 text-sm leading-relaxed">
+              This interview has been automatically closed because our proctoring system recorded <strong>3 severe violations</strong> of our anti-cheating policy (navigating away from the interview tab or minimizing the window).
+              <br /><br />
+              The session recording and transcript have been permanently locked and flagged for review by the recruiting team.
+            </p>
           </div>
           <button
             onClick={() => navigate('/admin')}
@@ -349,7 +349,7 @@ export default function InterviewRoom() {
 
   return (
     <div className="h-screen bg-gray-50 dark:bg-gray-950 flex flex-col font-sans overflow-hidden">
-      
+
       {/* Toast Warning */}
       {showWarningToast && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-red-600/90 text-white px-6 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center space-x-3 animate-bounce">
@@ -378,7 +378,7 @@ export default function InterviewRoom() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {micSupported && (
                 <div className="hidden sm:flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
@@ -396,12 +396,12 @@ export default function InterviewRoom() {
                   </button>
                 </div>
               )}
-              
+
               <div className="flex items-center space-x-3">
                 <span className="hidden sm:inline text-sm text-gray-500 dark:text-gray-400 font-medium">
                   Question {questionCount}
                 </span>
-                
+
                 <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-sm font-medium ${isComplete ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200" : "bg-blue-100/50 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50"}`}>
                   <span className={`w-2 h-2 rounded-full ${isComplete ? "" : "animate-pulse"} ${isComplete ? "bg-green-600 dark:bg-green-400" : "bg-blue-500 dark:bg-blue-400"}`}></span>
                   <span>{isComplete ? "Completed" : "Live"}</span>
@@ -414,7 +414,7 @@ export default function InterviewRoom() {
 
       {/* Main Content Area (Split layout + floating stuff outside) */}
       <div className="flex-1 mt-16 flex flex-col relative overflow-hidden">
-        
+
         {/* Status Bar */}
         <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 py-2.5 z-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -459,7 +459,7 @@ export default function InterviewRoom() {
                 <span className="text-xs font-medium">Camera Disabled</span>
               </div>
             )}
-            
+
             {/* Monitor indicator */}
             <div className="absolute top-3 left-3 flex space-x-2">
               <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold text-white uppercase tracking-wider bg-black/50 backdrop-blur-md`}>
@@ -467,7 +467,7 @@ export default function InterviewRoom() {
               </span>
               {warnings > 0 && (
                 <span className="px-2 py-0.5 rounded-md text-[10px] font-bold text-white bg-red-500/80 backdrop-blur-md animate-pulse">
-                  {warnings} Alerts <FiAlertTriangle className="inline w-3 h-3 ml-1 mb-0.5"/>
+                  {warnings} Alerts <FiAlertTriangle className="inline w-3 h-3 ml-1 mb-0.5" />
                 </span>
               )}
             </div>
@@ -479,27 +479,27 @@ export default function InterviewRoom() {
               </div>
             )}
           </div>
-          
+
           {/* AI Avatar Orb visualization */}
           <div className="relative w-full h-24 bg-gray-900 rounded-2xl flex flex-col items-center justify-center shadow-2xl ring-2 ring-gray-700/50 overflow-hidden pointer-events-auto">
-             <div className="absolute text-[10px] font-bold text-white/50 top-3 left-3 uppercase tracking-wider w-full">AI Interviewer</div>
-             <div className="flex items-center justify-center h-full w-full mt-4">
-                {isSpeaking ? (
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute w-12 h-12 bg-blue-500 rounded-full opacity-20 animate-ping"></div>
-                    <div className="absolute w-10 h-10 bg-blue-400 rounded-full opacity-40 animate-pulse"></div>
-                    <div className="relative w-8 h-8 bg-blue-300 rounded-full shadow-[0_0_15px_rgba(96,165,250,0.8)]"></div>
-                  </div>
-                ) : thinking ? (
-                  <div className="relative flex Items-center justify-center space-x-2 mt-4">
-                    <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-bounce"></div>
-                    <div className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
-                    <div className="w-2.5 h-2.5 bg-yellow-300 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 bg-gray-600 rounded-full opacity-50 relative top-2"></div>
-                )}
-             </div>
+            <div className="absolute text-[10px] font-bold text-white/50 top-3 left-3 uppercase tracking-wider w-full">AI Interviewer</div>
+            <div className="flex items-center justify-center h-full w-full mt-4">
+              {isSpeaking ? (
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute w-12 h-12 bg-blue-500 rounded-full opacity-20 animate-ping"></div>
+                  <div className="absolute w-10 h-10 bg-blue-400 rounded-full opacity-40 animate-pulse"></div>
+                  <div className="relative w-8 h-8 bg-blue-300 rounded-full shadow-[0_0_15px_rgba(96,165,250,0.8)]"></div>
+                </div>
+              ) : thinking ? (
+                <div className="relative flex Items-center justify-center space-x-2 mt-4">
+                  <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-bounce"></div>
+                  <div className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                  <div className="w-2.5 h-2.5 bg-yellow-300 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                </div>
+              ) : (
+                <div className="w-8 h-8 bg-gray-600 rounded-full opacity-50 relative top-2"></div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -525,11 +525,10 @@ export default function InterviewRoom() {
               {/* Messages */}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-fade-in-up`}>
-                  <div className={`max-w-[85%] rounded-3xl px-6 py-4 shadow-sm ${
-                    msg.role === "user"
-                      ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-sm backdrop-blur-sm"
-                      : "bg-white/80 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50 text-gray-800 dark:text-gray-100 rounded-bl-sm backdrop-blur-xl"
-                  }`}>
+                  <div className={`max-w-[85%] rounded-3xl px-6 py-4 shadow-sm ${msg.role === "user"
+                    ? "bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-sm backdrop-blur-sm"
+                    : "bg-white/80 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50 text-gray-800 dark:text-gray-100 rounded-bl-sm backdrop-blur-xl"
+                    }`}>
                     <div className="text-[15px] leading-relaxed whitespace-pre-wrap">{msg.content}</div>
                   </div>
                 </div>
@@ -596,11 +595,10 @@ export default function InterviewRoom() {
                     <button
                       onClick={handleMicClick}
                       disabled={thinking || isSpeaking}
-                      className={`relative w-20 h-20 rounded-full flex items-center justify-center text-3xl transition-all duration-300 disabled:opacity-40 disabled:scale-95 group ${
-                        listening
-                          ? "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.3)]"
-                          : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:scale-105"
-                      }`}
+                      className={`relative w-20 h-20 rounded-full flex items-center justify-center text-3xl transition-all duration-300 disabled:opacity-40 disabled:scale-95 group ${listening
+                        ? "bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.3)]"
+                        : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:scale-105"
+                        }`}
                     >
                       {listening && (
                         <div className="absolute inset-0 rounded-full border-4 border-rose-400/50 animate-ping"></div>

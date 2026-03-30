@@ -16,14 +16,20 @@ export default function Signup() {
   async function handleSignup(e) {
     e.preventDefault();
     setError("");
-    
+
     // Basic validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
     }
-    
+
     setLoading(true);
+
+    // DEBUG: Print the raw value of the API key Vite injected at build time
+    console.log("Vite Injected Key:", import.meta.env.VITE_FIREBASE_API_KEY);
+    console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
+    console.log("Type of API Key:", typeof import.meta.env.VITE_FIREBASE_API_KEY);
+
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, "users", result.user.uid), {
@@ -53,7 +59,7 @@ export default function Signup() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Enhanced background with subtle patterns */}
       <div className="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-800/20 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:[mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]"></div>
-      
+
       <div className="relative w-full max-w-md">
         {/* Logo Section */}
         <div className="text-center mb-10">
@@ -197,8 +203,8 @@ export default function Signup() {
           <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
               Already have an account?{' '}
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
               >
                 Sign in to your account
