@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "[GCP_API_KEY]",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "ai-interview-bot-5608f.firebaseapp.com",
   projectId: "ai-interview-bot-5608f",
   storageBucket: "ai-interview-bot-5608f.firebasestorage.app",

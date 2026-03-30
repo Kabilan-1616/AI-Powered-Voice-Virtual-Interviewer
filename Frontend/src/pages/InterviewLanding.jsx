@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 export default function InterviewLanding() {
   const { sessionId } = useParams();

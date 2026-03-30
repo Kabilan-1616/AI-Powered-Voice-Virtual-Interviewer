@@ -5,7 +5,7 @@ import { collection, query, where, getDocs, updateDoc, doc } from "firebase/fire
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { FiCameraOff, FiAlertTriangle } from "react-icons/fi"; // We will install this if not present, but for now we'll use SVG or tailwind if we can't
 
-const BACKEND = "http://localhost:5000";
+const BACKEND = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 export default function InterviewRoom() {
   const { sessionId } = useParams();
