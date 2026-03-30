@@ -42,7 +42,8 @@ export default function Signup() {
       } else if (err.code === 'auth/weak-password') {
         setError("Please choose a stronger password.");
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        console.error("Detailed Signup Error:", err);
+        setError(err.message || "An unexpected error occurred. Please try again.");
       }
     }
     setLoading(false);
